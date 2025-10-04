@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alte 25 Fest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            background: #2c5f8d;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 60px 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .logo-image {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .cta-section {
+            margin: 50px 0;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: 3px solid #000;
+            padding: 18px 50px;
+            font-size: 1.3em;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 
+                0 6px 0 #000,
+                0 10px 30px rgba(0, 0, 0, 0.4);
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            position: relative;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 9px 0 #000,
+                0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .cta-button:active {
+            transform: translateY(3px);
+            box-shadow: 
+                0 3px 0 #000,
+                0 5px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .powered-text {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
+            font-weight: normal;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3em;
+            font-weight: 900;
+            box-shadow: 
+                0 5px 0 #000,
+                0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 3px solid #000;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 30px;
+            }
+
+            .logo-image {
+                max-width: 250px;
+            }
+
+            .cta-button {
+                padding: 15px 40px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="header">
+            <img src="https://i.ibb.co/vvHMtY3H/1000082209-removebg-preview.png" alt="Alte 25 Fest Logo" class="logo-image">
+        </div>
+
+        <div class="cta-section">
+            <button class="cta-button" onclick="handleGetIn()">Get In →</button>
+        </div>
+
+        <div class="footer">
+            <p class="powered-text">Powered by</p>
+            <div class="logo">LOGO</div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random size between 1-3px
+                const size = Math.random() * 2 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // Random position
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                // Random animation delay and duration
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                
+                starsContainer.appendChild(star);
+            }
+        }
+
+        createStars();
+
+        function handleGetIn() {
+            window.location.href = 'gh.html';
+        }
+    </script>
+</body>
+</html>
