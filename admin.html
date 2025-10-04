@@ -13,8 +13,8 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- QR Code Scanner -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+    <!-- QR Code Scanner - Fixed CDN -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     
     <style>
         * {
@@ -948,7 +948,7 @@
 
     <script>
         // Firebase Configuration - REPLACE WITH YOUR ACTUAL CONFIG
-        const firebaseConfig = {
+       const firebaseConfig = {
     apiKey: "AIzaSyDW8V2SjNITrA4LcdmeILh944mTbOKnM0c",
     authDomain: "rewarderhub.firebaseapp.com",
     projectId: "rewarderhub",
@@ -958,14 +958,13 @@
     measurementId: "G-F2ERB5NGN0"
 };
 
-
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         // Admin Access Control
-        let allowedAdmins = ['bashorunidris01@gmail.com', 'bashxidr@gmail.com'];
+        let allowedAdmins = ['bashorunidris01@gmail.com', 'admin@alte25.com'];
         let currentUser = null;
         let allTickets = [];
         let allBuyers = [];
@@ -1614,28 +1613,82 @@
 
         // Scanner Functions
         async function startScanner() {
+            // Check if library is loaded
+            if (typeof Html5Qrcode === 'undefined') {
+                alert('QR Scanner library not loaded. Please refresh the page and try again.');
+                console.error('Html5Qrcode is not defined');
+                return;
+            }
+
+            const readerElement = document.getElementById('qr-reader');
+            
             if (html5QrCode) {
                 try {
                     await html5QrCode.stop();
-                } catch (e) {}
+                    html5QrCode.clear();
+                } catch (e) {
+                    console.log('Scanner already stopped');
+                }
+                html5QrCode = null;
             }
 
-            html5QrCode = new Html5Qrcode("qr-reader");
-            
             try {
+                // Show loading message
+                readerElement.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-secondary);">Starting camera...</div>';
+
+                // Get available cameras
+                const cameras = await Html5Qrcode.getCameras();
+                
+                if (!cameras || cameras.length === 0) {
+                    alert('No camera found on this device');
+                    readerElement.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-secondary);">No camera available</div>';
+                    return;
+                }
+
+                console.log('Available cameras:', cameras);
+
+                // Initialize scanner
+                html5QrCode = new Html5Qrcode("qr-reader");
+                
+                // Try to use back camera (environment) if available, otherwise use first camera
+                const cameraId = cameras.length > 1 ? cameras[cameras.length - 1].id : cameras[0].id;
+                
                 await html5QrCode.start(
-                    { facingMode: "environment" },
+                    cameraId,
                     {
                         fps: 10,
-                        qrbox: { width: 250, height: 250 }
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.0
                     },
                     (decodedText) => {
+                        console.log('QR Code detected:', decodedText);
                         verifyTicket(decodedText);
+                    },
+                    (errorMessage) => {
+                        // Scanning errors are normal, just ignore
                     }
                 );
+                
+                console.log('Scanner started successfully');
+                
             } catch (error) {
                 console.error('Error starting scanner:', error);
-                alert('Error starting camera. Please check permissions.');
+                let errorMsg = 'Failed to start camera. ';
+                
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    errorMsg += 'Please allow camera permissions in your browser settings.';
+                } else if (error.name === 'NotFoundError') {
+                    errorMsg += 'No camera found on this device.';
+                } else if (error.name === 'NotReadableError') {
+                    errorMsg += 'Camera is already in use by another application.';
+                } else if (error.name === 'OverconstrainedError') {
+                    errorMsg += 'Camera constraints could not be satisfied.';
+                } else {
+                    errorMsg += error.message || 'Unknown error occurred.';
+                }
+                
+                alert(errorMsg);
+                readerElement.innerHTML = `<div style="padding: 40px; text-align: center; color: var(--danger);">${errorMsg}<br><br>Try using manual verification instead.</div>`;
             }
         }
 
@@ -1753,6 +1806,56 @@
                 });
         }
 
-        </script>
-        </body>
-              </html>
+        // Export CSV
+        async function exportCSV() {
+            try {
+                const snapshot = await db.collection('alte25_tickets').get();
+                const rows = [['ID', 'Name', 'Email', 'Type', 'Amount', 'Quantity', 'Used', 'Date']];
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate().toISOString() : data.createdAt) : '';
+                    
+                    rows.push([
+                        doc.id,
+                        data.buyerName || '',
+                        data.buyerEmail || '',
+                        data.ticketType || '',
+                        data.paymentAmount || data.amount || 0,
+                        data.ticketCount || 1,
+                        data.used ? 'Yes' : 'No',
+                        date
+                    ]);
+                });
+
+                const csv = rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+                    .join('\n');
+                
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `alte25-tickets-${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert('CSV exported successfully!');
+            } catch (error) {
+                console.error('Error exporting CSV:', error);
+                alert('Error exporting data');
+            }
+        }
+
+        // Refresh Data
+        function refreshData() {
+            loadAllData();
+            alert('Data refreshed!');
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadAdminsFromFirestore();
+        });
+    </script>
+</body>
+    </html>
