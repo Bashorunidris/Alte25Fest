@@ -239,7 +239,7 @@
         .countdown-value {
             font-size: clamp(2em, 5vw, 3em);
             font-weight: 900;
-            color: var(--primary);
+            color: #cfbecf;
             display: block;
         }
 
@@ -1010,9 +1010,9 @@
     font-size: 1.3em;
   }
  .rewarder-text h20 {
-    color: ##ff152a;
+    color: #ff153f;
     margin-bottom: 10px;
-    font-size: 1.3em;
+    font-size: 3em;
   }
   .rewarder-text p {
     color: #444;
@@ -1131,7 +1131,7 @@
                 <div class="info-icon-large">📝</div>
                 <div class="info-text">
                     <h3>Description</h3>
-                    <p>will be here</p>
+                    <p>ALTE FEST ’25 is the ultimate celebration of music, fashion, art, food, and culture — a vibrant space where creativity and lifestyle meet. Enjoy electrifying performances, bold fashion showcases, expressive art, and premium brand experiences. Step into the energy, connect with others, and live the true Alte spirit — where every moment is a party and every vibe tells a story.</p>
                 </div>
             </div>
         </div>
@@ -1178,7 +1178,7 @@
                 <div class="info-icon-large">🎤</div>
                 <div class="info-text">
                     <h3>About Host</h3>
-                    <p>I’m Sammy from Lagos.
+                    <p>I’m Sammy Of Lagos.
 I’m passionate about bringing young people together — to connect, make real friendships, and enjoy the fun side of life.
 Let’s celebrate creativity, energy, and good vibes at Alte 25 Fest — where every moment is a party and every face tells a story.
 Can’t wait to see you there! </p>
@@ -1197,7 +1197,23 @@ Can’t wait to see you there! </p>
                     <p>Rewarder is a dynamic event and social engagement platform by iSmart Digital Connect, designed to help users create events, sell tickets.
 
 Phone: +234 901 234 5678
-Website: www.rewarder.site</p>
+</p>
+<a href="https://www.rewarder.site/" target="_blank" 
+   style="display:inline-block;
+          background:linear-gradient(135deg,#1a1a2e,#ffa500);
+          color:#fff;
+          padding:12px 28px;
+          border-radius:30px;
+          font-weight:600;
+          text-decoration:none;
+          font-family:sans-serif;
+          transition:all .3s ease;
+          box-shadow:0 5px 15px rgba(0,0,0,0.2);"
+   onmouseover="this.style.opacity='0.85'"
+   onmouseout="this.style.opacity='1'">
+  Visit Rewarder
+</a>
+
                 </div>
             </div>
         </div>
@@ -1353,7 +1369,7 @@ Website: www.rewarder.site</p>
         <h20>Play Now </h20>
       <h2>Rewarder — Create. Connect. Get Sponsored.</h2>
       <p>Join the vibe! Host your event, sell tickets, and get sponsorships — all in one place.</p>
-      <a href="https://rewarderapp.com" target="_blank" class="rewarder-btn">Explore Now</a>
+      <a href="https://rewarder.site" target="_blank" class="rewarder-btn">Explore Now</a>
 
       <!-- Playful Indicator -->
       <div id="indicator" class="rewarder-indicator">
@@ -1841,34 +1857,51 @@ function processPayment() {
   const popup = document.getElementById('rewarderPopup');
   const closeBtn = document.getElementById('rewarderClose');
   const indicator = document.getElementById('indicator');
+  const video = document.getElementById('rewarderVideo');
 
-  // Show popup after 15 seconds
+  // Show popup after 13 seconds
   setTimeout(() => {
     popup.style.display = 'flex';
 
-    // Start countdown (10s)
-    let timeLeft = 26;
-    const countdown = setInterval(() => {
-      timeLeft--;
+    // Listen when the iframe video starts playing
+    let countdownStarted = false;
+    const startCountdown = () => {
+      if (countdownStarted) return; // only once
+      countdownStarted = true;
+      let timeLeft = 26;
       closeBtn.textContent = `⏳ ${timeLeft}s`;
 
-      if (timeLeft <= 0) {
-        clearInterval(countdown);
-        closeBtn.textContent = "✖ Close";
-        closeBtn.classList.add('active');
-        closeBtn.style.cursor = 'pointer';
-        indicator.style.opacity = '0';
+      const countdown = setInterval(() => {
+        timeLeft--;
+        closeBtn.textContent = `⏳ ${timeLeft}s`;
 
-        // Enable click to close
-        closeBtn.addEventListener('click', () => {
-          popup.style.animation = 'fadeOut 0.5s ease';
-          setTimeout(() => popup.style.display = 'none', 500);
-        });
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          closeBtn.textContent = "✖ Close";
+          closeBtn.classList.add('active');
+          closeBtn.style.cursor = 'pointer';
+          indicator.style.opacity = '0';
+
+          // Enable close
+          closeBtn.addEventListener('click', () => {
+            popup.style.animation = 'fadeOut 0.5s ease';
+            setTimeout(() => popup.style.display = 'none', 500);
+          });
+        }
+      }, 1000);
+    };
+
+    // Detect video playing using message from iframe
+    window.addEventListener('message', (e) => {
+      if (e.data && typeof e.data === 'string' && e.data.includes('playing')) {
+        startCountdown();
       }
-    }, 1000);
-  }, 13000); // show after 15 seconds
-});
+    });
 
+    // Fallback if autoplay starts silently
+    setTimeout(startCountdown, 4000);
+  }, 13000);
+});
 
     </script>
 </body>
