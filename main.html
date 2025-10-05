@@ -380,7 +380,7 @@
         .ticket-price {
             font-size: clamp(2em, 6vw, 3.5em);
             font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: #ffffff;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -416,7 +416,7 @@
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary);
-            color: var(--primary);
+            color: #ffffff;
         }
 
         .btn-outline:hover:not(:disabled) {
@@ -834,7 +834,7 @@
         }
 
         .footer-text {
-            font-size: clamp(1.2em, 4vw, 1.8em);
+            font-size: clamp(0.8em, 2.8vw, 1em);
             font-weight: 700;
             background: #ffffff;
             -webkit-background-clip: text;
@@ -938,6 +938,132 @@
         box-shadow: 0 15px 50px rgba(255, 107, 53, 0.7);
     }
 }
+
+
+
+  /* Popup Overlay */
+  .rewarder-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    animation: fadeIn 0.5s ease;
+  }
+
+  /* Popup Container */
+  .rewarder-content {
+    background: #fff;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.6s ease;
+  }
+
+  /* Close Button */
+  .rewarder-close {
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    font-size: 20px;
+    color: #555;
+    background: #f1f1f1;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-weight: 600;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transition: all 0.4s ease;
+    z-index: 10;
+  }
+
+  .rewarder-close.active {
+    background: #ffa500;
+    color: #fff;
+    cursor: pointer;
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  /* Video */
+  .rewarder-media {
+    width: 100%;
+    height: 230px;
+    border: none;
+    background: #000;
+  }
+
+  /* Text Section */
+  .rewarder-text {
+    padding: 20px;
+  }
+
+  .rewarder-text h2 {
+    color: #1a1a2e;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+  }
+ .rewarder-text h20 {
+    color: ##ff152a;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+  }
+  .rewarder-text p {
+    color: #444;
+    font-size: 0.95em;
+    margin-bottom: 15px;
+  }
+
+  /* Button */
+  .rewarder-btn {
+    background: linear-gradient(135deg, #1a1a2e, #ffa500);
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: inline-block;
+  }
+
+  .rewarder-btn:hover { opacity: 0.85; }
+
+  /* Playful Indicator */
+  .rewarder-indicator {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #777;
+    font-size: 0.9em;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+
+  .rewarder-indicator .ring {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #ffa500;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  /* Animations */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+
+
     </style>
 </head>
 <body>
@@ -957,7 +1083,7 @@
         <div class="event-info-card">
             <div class="info-grid">
                 <div class="info-item">
-                    <div class="info-icon">📅</div>
+                    <div class="info-icon">🛎</div>
                     <div class="info-label">Date</div>
                     <div class="info-value">Friday Nov 7, 2025</div>
                 </div>
@@ -1052,7 +1178,10 @@
                 <div class="info-icon-large">🎤</div>
                 <div class="info-text">
                     <h3>About Host</h3>
-                    <p>Information about the host will be displayed here.</p>
+                    <p>I’m Sammy from Lagos.
+I’m passionate about bringing young people together — to connect, make real friendships, and enjoy the fun side of life.
+Let’s celebrate creativity, energy, and good vibes at Alte 25 Fest — where every moment is a party and every face tells a story.
+Can’t wait to see you there! </p>
                 </div>
             </div>
         </div>
@@ -1065,7 +1194,10 @@
 
                 <div class="info-text">
                     <h3>Rewarder</h3>
-                    <p>Reward information will be displayed here.</p>
+                    <p>Rewarder is a dynamic event and social engagement platform by iSmart Digital Connect, designed to help users create events, sell tickets.
+
+Phone: +234 901 234 5678
+Website: www.rewarder.site</p>
                 </div>
             </div>
         </div>
@@ -1088,7 +1220,7 @@
             </div>
         </div>
         <div class="footer">
-            <p class="footer-text">Alright to Rewarder X ALTE Fest</p>
+            <p class="footer-text">All right to Rewarder X ALTE Fest @2025</p>
         </div>
     </div>
 
@@ -1199,9 +1331,38 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" id="payNowBtn" style="width: 100%; padding: 20px;" onclick="processPayment()">Pay & Vote Now</button>
+            <button class="btn btn-primary" id="payNowBtn" style="width: 100%; padding: 20px;" onclick="processPayment()">Pay</button>
         </div>
     </div>
+
+
+
+<!-- Rewarder Popup Ad -->
+<div id="rewarderPopup" class="rewarder-popup">
+  <div class="rewarder-content">
+    <span id="rewarderClose" class="rewarder-close">⏳ 25s</span>
+
+    <iframe 
+      class="rewarder-media" 
+      src="https://drive.google.com/file/d/1ORXdoELksDi4tksA3C3p_sR5ziO1Bj96/preview"
+      allow="autoplay; fullscreen"
+      allowfullscreen>
+    </iframe>
+
+    <div class="rewarder-text">
+        <h20>Play Now </h20>
+      <h2>Rewarder — Create. Connect. Get Sponsored.</h2>
+      <p>Join the vibe! Host your event, sell tickets, and get sponsorships — all in one place.</p>
+      <a href="https://rewarderapp.com" target="_blank" class="rewarder-btn">Explore Now</a>
+
+      <!-- Playful Indicator -->
+      <div id="indicator" class="rewarder-indicator">
+        <div class="ring"></div>
+        <span>Enjoy the vibe...</span>
+      </div>
+    </div>
+  </div>
+</div>
 
     <script>
         // Firebase Configuration - REPLACE WITH YOUR ACTUAL CONFIG
@@ -1674,6 +1835,41 @@ function processPayment() {
                 if (e.target === this) closeDetails();
             });
         });
+        
+        
+        document.addEventListener('DOMContentLoaded', () => {
+  const popup = document.getElementById('rewarderPopup');
+  const closeBtn = document.getElementById('rewarderClose');
+  const indicator = document.getElementById('indicator');
+
+  // Show popup after 15 seconds
+  setTimeout(() => {
+    popup.style.display = 'flex';
+
+    // Start countdown (10s)
+    let timeLeft = 26;
+    const countdown = setInterval(() => {
+      timeLeft--;
+      closeBtn.textContent = `⏳ ${timeLeft}s`;
+
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        closeBtn.textContent = "✖ Close";
+        closeBtn.classList.add('active');
+        closeBtn.style.cursor = 'pointer';
+        indicator.style.opacity = '0';
+
+        // Enable click to close
+        closeBtn.addEventListener('click', () => {
+          popup.style.animation = 'fadeOut 0.5s ease';
+          setTimeout(() => popup.style.display = 'none', 500);
+        });
+      }
+    }, 1000);
+  }, 13000); // show after 15 seconds
+});
+
+
     </script>
 </body>
     </html>
