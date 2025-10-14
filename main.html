@@ -1073,56 +1073,103 @@
         <div class="hero-content">
             <img src="https://i.ibb.co/vvHMtY3H/1000082209-removebg-preview.png" alt="ALTE 25 Logo" class="logo-hero">
             
+        <button 
+    id="e-ticket" 
+    class="get-ticket"
+    style="
+        display: inline-block;
+        padding: 15px 35px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1em;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        margin-top: 30px;
+    "
+    onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(255, 107, 53, 0.5)';"
+    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(255, 107, 53, 0.3)';"
+    onclick="document.querySelector('.tickets-grid').scrollIntoView({ behavior: 'smooth', block: 'start' }); setTimeout(() => { document.querySelector('.tickets-grid').style.animation = 'pulse 0.6s'; }, 300);">
+    Get Ticket
+</button>
+
+<style>
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+</style>  
         <div class="scroll-indicator">
             <div></div>
-            <span style="color: white;">Scroll</span>
+            <span style="color: white;">Scroll for more detail</span>
         </div>
     </section>
 
-    <div class="container">
+     <div class="container">
         <div class="event-info-card">
             <div class="info-grid">
                 <div class="info-item">
                     <div class="info-icon">🛎</div>
-                    <div class="info-label">Date</div>
-                    <div class="info-value">Friday Nov 7, 2025</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-icon">🕘</div>
-                    <div class="info-label">Time</div>
-                    <div class="info-value">9:00 PM</div>
+                   <div class="info-item" style="display:flex;align-items:center;gap:10px;background:#f9fafb;padding:10px 15px;border-radius:8px;font-family:Arial,sans-serif;">
+  <div class="info-icon" style="font-size:20px;">🕘</div>
+  <div>
+    <div class="info-label" style="font-weight:600;color:#111827;">Date</div>
+    <div class="info-value" style="color:#374151;">Friday, Nov 7, 2025 
+    9:00</div>
+  
+  </div>
+  <a 
+    href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=ALTE+FEST+25&dates=20251107T180000Z/20251107T230000Z&details=Join+the+event+at+New+Yoker+Ashade+Estate,+Igboelerin,+Lagos&location=New+Yoker+Ashade+Estate,+Igboelerin,+Lagos"
+    target="_blank"
+    style="margin-left:auto;background:#0b1220;color:#fff;text-decoration:none;font-size:13px;padding:6px 10px;border-radius:6px;">
+    + Add to Calendar
+  </a>
+</div>
+
+                          <div class="countdown-section" style="text-align:center;font-family:Arial,sans-serif;">
+  <h2 class="section-title" style="margin-bottom:8px;">Countdown</h2>
+  <div class="countdown-timer" id="countdown" style="display:inline-block;background:#f9fafb;padding:10px 15px;border-radius:8px;">
+    <div class="countdown-item">
+      <span class="countdown-value" id="days" style="font-size:28px;font-weight:700;color:#111827;">00</span><br>
+      <span class="countdown-label" style="font-size:14px;color:#6b7280;">Days Left</span>
+    </div>
+  </div>
+</div>
+
+
+
                 </div>
                 <div class="info-item">
                     <div class="info-icon">📍</div>
-                    <div class="info-label">Location</div>
-                    <div class="info-value">TBA</div>
-                </div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=New+Yoker+Ashade+estate,+Igboelerin" target="_blank" 
+   style="text-decoration:none;color:#111827;">
+  <div style="background:#f9fafb;padding:10px 15px;border-radius:8px;display:flex;align-items:center;gap:8px;font-family:Arial, sans-serif;color:#111827;font-size:14px;cursor:pointer;">
+    <span style="font-weight:600;">Location:</span>
+    <span>New Yoker Ashade estate, Igboelerin</span>
+  </div>
+</a>
+<!-- Google Map (Satellite View) for New Yoker Ashade Estate, Igboelerin -->
+<iframe 
+  src="https://www.google.com/maps?q=New+Yoker+Ashade+Estate,+Igboelerin,+Lagos,+Nigeria&output=embed&t=k"
+  width="100%" 
+  height="300" 
+  style="border:0;border-radius:8px;"
+  allowfullscreen 
+  loading="lazy">
+</iframe>
+
+
             </div>
 
            
-        <div class="countdown-section">
-            <div class="section-header">
-                <h2 class="section-title">Countdown</h2>
             </div>
-            <div class="countdown-timer" id="countdown">
-                <div class="countdown-item">
-                    <span class="countdown-value" id="days">00</span>
-                    <span class="countdown-label">Days</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="hours">00</span>
-                    <span class="countdown-label">Hours</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="minutes">00</span>
-                    <span class="countdown-label">Minutes</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="seconds">00</span>
-                    <span class="countdown-label">Seconds</span>
-                </div>
-            </div>
-        </div>
+
+        
 
        
 
@@ -1436,23 +1483,7 @@ Phone: +234 901 234 5678
             }
         }
 
-        function updateCountdown() {
-            const eventDate = new Date('2025-11-07T21:00:00').getTime();
-            const now = new Date().getTime();
-            const distance = eventDate - now;
-
-            if (distance > 0) {
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                document.getElementById('days').textContent = String(days).padStart(2, '0');
-                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-            }
-        }
+        
 
         function showDetails(ticketType) {
             const details = ticketDetails[ticketType];
@@ -1840,9 +1871,7 @@ function processPayment() {
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
-
+            
             // Close modals on outside click
             document.getElementById('ticketModal').addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
@@ -1851,6 +1880,35 @@ function processPayment() {
                 if (e.target === this) closeDetails();
             });
         });
+        function initCountdown() {
+        const eventDate = new Date("November 7, 2025 00:00:00").getTime();
+        const daysEl = document.getElementById("days");
+        
+        // Check if element exists before trying to use it
+        if (!daysEl) {
+            console.error("Countdown element not found");
+            return;
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+            const days = Math.max(0, Math.floor(distance / (1000 * 60 * 60 * 24)));
+            daysEl.textContent = days.toString().padStart(2, '0');
+            if (distance <= 0) clearInterval(timer);
+        }
+
+        updateCountdown();
+        const timer = setInterval(updateCountdown, 1000 * 60 * 60); // update hourly
+    }
+
+    // Run when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCountdown);
+    } else {
+        initCountdown();
+    }
+        
         
         
         
