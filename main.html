@@ -1824,52 +1824,131 @@ function processPayment() {
         }
 
         function generateAndDownloadTicket(paymentData, ticketData) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 800;
-            canvas.height = 400;
-            const ctx = canvas.getContext('2d');
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 1200; // Portrait style
+    const ctx = canvas.getContext('2d');
 
-            const designs = {
-                1: { bg: '#ff6b35', accent: '#f7931e' },
-                2: { bg: '#1560BD', accent: '#2c7dd4' },
-                3: { bg: '#8e44ad', accent: '#c39bd3' },
-                4: { bg: '#e74c3c', accent: '#f39c12' },
-                5: { bg: '#34495e', accent: '#7f8c8d' },
-                6: { bg: '#16a085', accent: '#1abc9c' }
-            };
+    // Theme colors
+    const denimBlue = "#1f4e79";
+    const white = "#ffffff";
+    const gold = "#ffd700";
 
-            const design = designs[selectedDesign];
-            
-            ctx.fillStyle = design.bg;
-            ctx.fillRect(0, 0, 800, 400);
-            
-            ctx.fillStyle = design.accent;
-            ctx.fillRect(0, 0, 800, 80);
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 40px Arial';
-            ctx.fillText('ALTE 25 FEST', 50, 50);
-            
-            ctx.font = 'bold 30px Arial';
-            ctx.fillText(ticketData.ticketType, 50, 150);
-            
-            ctx.font = '20px Arial';
-            ctx.fillText('Name: ' + ticketData.buyerName, 50, 200);
-            ctx.fillText('Date: Nov 7, 2025 | Time: 9:00 PM', 50, 240);
-            ctx.fillText('Ticket ID: ' + (paymentData.transaction_id || paymentData.tx_ref), 50, 280);
-            
-            ctx.font = 'bold 24px Arial';
-            ctx.fillText('Qty: ' + ticketData.ticketCount + ' | Total: ₦' + ticketData.amount.toLocaleString(), 50, 340);
+    // Background
+    ctx.fillStyle = white;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            canvas.toBlob(function(blob) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'alte25-ticket-' + Date.now() + '.png';
-                a.click();
-                URL.revokeObjectURL(url);
-            });
-        }
+    // Header section
+    ctx.fillStyle = denimBlue;
+    ctx.fillRect(0, 0, canvas.width, 220);
+
+    // Party Logo
+    const partyLogo = new Image();
+    partyLogo.src = "https://i.ibb.co/Kx4yF6Rn/IMG-20251014-WA0007-1.jpg";
+
+    // Draw everything once the Party logo loads
+    partyLogo.onload = () => {
+        // Circular logo with gold outline
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(130, 110, 70, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(partyLogo, 60, 40, 140, 140);
+        ctx.restore();
+
+        // Gold border ring
+        ctx.strokeStyle = gold;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(130, 110, 72, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Header Text
+        ctx.fillStyle = white;
+        ctx.font = "bold 50px Arial";
+        ctx.fillText("ALTE FEST '25", 250, 120);
+
+        ctx.font = "24px Arial";
+        ctx.fillText("Official Event Ticket", 250, 170);
+
+        // Ticket Type and Price
+        ctx.fillStyle = denimBlue;
+        ctx.font = "bold 42px Arial";
+        ctx.fillText(ticketData.ticketType.toUpperCase(), 60, 320);
+
+        ctx.font = "bold 38px Arial";
+        ctx.fillStyle = gold;
+        ctx.fillText("₦" + ticketData.amount.toLocaleString(), 60, 380);
+
+        // Buyer Info
+        ctx.fillStyle = "#111";
+        ctx.font = "24px Arial";
+        ctx.fillText("Name: " + ticketData.buyerName, 60, 460);
+        ctx.fillText("Email: " + ticketData.buyerEmail, 60, 500);
+        ctx.fillText("Ticket Qty: " + ticketData.ticketCount, 60, 540);
+        ctx.fillText("Transaction Ref: " + (paymentData.transaction_id || paymentData.tx_ref), 60, 580);
+        ctx.fillText("Date: Nov 7, 2025 | Time: 9:00 PM", 60, 620);
+        ctx.fillText("Venue: Lagos City Event Arena", 60, 660);
+
+        // Divider Line
+        ctx.beginPath();
+        ctx.moveTo(60, 700);
+        ctx.lineTo(740, 700);
+        ctx.strokeStyle = denimBlue;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // Generate QR Code dynamically
+        const qrCanvas = document.createElement('canvas');
+        const qrData = paymentData.tx_ref || "REWARDER_TICKET";
+
+        QRCode.toCanvas(
+            qrCanvas,
+            qrData,
+            { width: 200, margin: 1, color: { dark: "#1f4e79", light: "#ffffff" } },
+            function (error) {
+                if (!error) {
+                    ctx.drawImage(qrCanvas, 500, 300, 220, 220);
+
+                    // Rewarder Logo (Balanced size)
+                    const rewarderLogo = new Image();
+                    rewarderLogo.src = "https://i.ibb.co/n8fLNJyc/1000040781-removebg-preview.png";
+
+                    // Sponsor Logo (Fixed width)
+                    const sponsorLogo = new Image();
+                    sponsorLogo.src = "https://i.ibb.co/6cJ0xWgV/IMG-20251016-WA0000.jpg";
+
+                    rewarderLogo.onload = () => {
+                        ctx.drawImage(rewarderLogo, 250, 760, 250, 130); // refined smaller size
+
+                        // Footer Text
+                        ctx.fillStyle = denimBlue;
+                        ctx.font = "bold 26px Arial";
+                        ctx.fillText("Powered by Rewarder", 260, 940);
+
+                        sponsorLogo.onload = () => {
+                            ctx.drawImage(sponsorLogo, 250, 960, 300, 150);
+
+                            // Final Auto Download
+                            canvas.toBlob(function (blob) {
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = "rewarder_ticket_" + Date.now() + ".png";
+                                a.style.display = "none";
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            });
+                        };
+                    };
+                }
+            }
+        );
+    };
+}
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -1915,6 +1994,6 @@ function processPayment() {
         
         
         
-    </script>
+                                        </script>
 </body>
     </html>
