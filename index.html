@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alte 25 Fest</title>
+    <title>Pose Music Library</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,208 +13,875 @@
         }
 
         body {
-            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 30px;
-            padding: 60px 40px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 1;
         }
 
         .header {
-            margin-bottom: 50px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(100, 200, 255, 0.3);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .logo-image {
-            max-width: 300px;
-            width: 100%;
-            height: auto;
-            filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.3));
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff0050;
         }
 
-        .cta-section {
-            margin: 50px 0;
+        .user-section {
+            display: none;
+            align-items: center;
+            gap: 15px;
         }
 
-        .cta-button {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff0050, #ff4081);
             color: white;
-            border: 3px solid #000;
-            padding: 18px 50px;
-            font-size: 1.3em;
-            border-radius: 15px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 0, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(100, 200, 255, 0.2);
+            color: #64c8ff;
+            border: 1px solid rgba(100, 200, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(100, 200, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(255, 100, 100, 0.2);
+            color: #ff6464;
+            border: 1px solid rgba(255, 100, 100, 0.5);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 100, 100, 0.4);
+        }
+
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: rgba(26, 26, 46, 0.95);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-card h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+            color: #ff0050;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(100, 200, 255, 0.8);
+        }
+
+        .toggle-auth {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .toggle-auth a {
+            color: #ff0050;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: none;
+        }
+
+        .container.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .add-song-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: rgba(100, 200, 255, 0.1);
+            border: 2px dashed rgba(100, 200, 255, 0.5);
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            box-shadow: 
-                0 6px 0 #000,
-                0 10px 30px rgba(0, 0, 0, 0.4);
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            position: relative;
+            font-size: 14px;
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 9px 0 #000,
-                0 15px 40px rgba(0, 0, 0, 0.5);
+        .file-input-label:hover {
+            background: rgba(100, 200, 255, 0.2);
+            border-color: rgba(100, 200, 255, 0.8);
         }
 
-        .cta-button:active {
-            transform: translateY(3px);
-            box-shadow: 
-                0 3px 0 #000,
-                0 5px 20px rgba(0, 0, 0, 0.4);
+        .file-input-label input {
+            display: none;
         }
 
-        .footer {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 2px solid #e0e0e0;
+        .file-name {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 5px;
         }
 
-        .powered-text {
-            color: #888;
-            font-size: 0.9em;
+        .preview-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .image-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-size: 40px;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0050, #ff4081);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .song-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .song-card:hover {
+            border-color: rgba(100, 200, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .song-cover {
+            width: 100%;
+            height: 200px;
+            background: rgba(100, 200, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            overflow: hidden;
+        }
+
+        .song-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .song-content {
+            padding: 20px;
+        }
+
+        .song-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .song-artist {
+            font-size: 14px;
+            color: #aaa;
             margin-bottom: 15px;
-            font-family: 'Arial', sans-serif;
-            font-weight: normal;
         }
 
-       .logo {
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-  border-radius: 50%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 5px 0 #000,
-    0 10px 30px rgba(0, 0, 0, 0.4);
-  border: 3px solid #000;
-  overflow: hidden; /* ensures image stays inside the circle */
-}
+        .song-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 15px 0;
+            border-top: 1px solid rgba(100, 200, 255, 0.2);
+            border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+            margin-bottom: 15px;
+            text-align: center;
+        }
 
-.logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* ensures image fills circle nicely */
-  border-radius: 50%;
-}
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #64c8ff;
+        }
 
-@media (max-width: 600px) {
-  .container {
-    padding: 40px 30px;
-  }
+        .stat-label {
+            font-size: 11px;
+            color: #aaa;
+        }
 
-  .logo {
-    width: 70px;
-    height: 70px;
-  }
+        .song-actions {
+            display: flex;
+            gap: 10px;
+        }
 
-  .cta-button {
-    padding: 15px 40px;
-    font-size: 1.1em;
-  }
-}
+        .song-actions button {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+        }
 
-    </style>
-</head>
-<body>
-    <div class="stars" id="stars"></div>
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(100, 200, 255, 0.5);
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 2000;
+            animation: slideUp 0.3s ease;
+        }
 
-    <div class="container">
-        <div class="header">
-            <img src="https://i.ibb.co/vvHMtY3H/1000082209-removebg-preview.png" alt="Alte 25 Fest Logo" class="logo-image">
-        </div>
-
-        <div class="cta-section">
-            <button class="cta-button" onclick="handleGetIn()">Get In →</button>
-        </div>
-
-        <div class="footer">
-            
-            <p class="powered-text">Powered by</p>
-            <div class="logo">
-  <img src="https://i.ibb.co/9DLT3P0/IMG-20250902-WA0109.jpg" alt="Logo Image">
-</div>
-
-        </div>
-    </div>
-
-    <script>
-        // Create animated stars
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            const numberOfStars = 100;
-
-            for (let i = 0; i < numberOfStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                
-                // Random size between 1-3px
-                const size = Math.random() * 2 + 1;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                
-                // Random position
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                
-                // Random animation delay and duration
-                star.style.animationDelay = Math.random() * 3 + 's';
-                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                
-                starsContainer.appendChild(star);
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
         }
 
-        createStars();
-
-        function handleGetIn() {
-            window.location.href = 'main.html';
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
         }
+
+        .empty-state-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .songs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-music"></i> Pose Music Library
+        </div>
+        <div class="user-section" id="userSection">
+            <div class="user-info">
+                <div class="user-name" id="userName">User</div>
+                <div class="user-email" id="userEmail">user@example.com</div>
+            </div>
+            <button class="btn btn-danger" onclick="signOut()">Sign Out</button>
+        </div>
+        <div id="authButtons" style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" onclick="toggleAuth('signin')">Sign In</button>
+            <button class="btn btn-primary" onclick="toggleAuth('signup')">Sign Up</button>
+        </div>
+    </div>
+
+    <!-- Auth Section -->
+    <div id="authSection" class="auth-container">
+        <!-- Sign In Form -->
+        <div id="signInForm" class="auth-card">
+            <h2>Sign In</h2>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="signInEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="signInPassword" placeholder="••••••••">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="handleSignIn()">Sign In</button>
+            <div class="toggle-auth">
+                Don't have an account? <a onclick="toggleAuth('signup')">Sign Up</a>
+            </div>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signUpForm" class="auth-card" style="display: none;">
+            <h2>Sign Up</h2>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="signUpName" placeholder="Your name">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="signUpEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="signUpPassword" placeholder="••••••••">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="handleSignUp()">Sign Up</button>
+            <div class="toggle-auth">
+                Already have an account? <a onclick="toggleAuth('signin')">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" id="mainContent">
+        <!-- Add Song Section -->
+        <div class="add-song-card">
+            <h3><i class="fas fa-plus-circle"></i> Add New Song</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Song Title</label>
+                    <input type="text" id="songTitle" placeholder="Enter song title">
+                </div>
+                <div class="form-group">
+                    <label>Artist Name</label>
+                    <input type="text" id="artistName" placeholder="Enter artist name">
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <label class="file-input-label" for="imageFile">
+                    <i class="fas fa-image"></i>
+                    <span>Click to upload song cover image</span>
+                </label>
+                <input type="file" id="imageFile" accept="image/*">
+                <div class="file-name" id="imageName"></div>
+            </div>
+
+            <div class="form-row full">
+                <label class="file-input-label" for="audioFile">
+                    <i class="fas fa-music"></i>
+                    <span>Click to upload audio file (MP3, WAV, OGG)</span>
+                </label>
+                <input type="file" id="audioFile" accept="audio/*">
+                <div class="file-name" id="audioName"></div>
+            </div>
+
+            <div class="preview-grid">
+                <div>
+                    <label>Image</label>
+                    <div class="image-preview" id="imagePreview">
+                        <i class="fas fa-image"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="uploadProgress" style="display: none; margin-top: 20px;">
+                <div>Uploading: <span id="uploadStatus">0%</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="uploadSong()">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Song
+            </button>
+        </div>
+
+        <!-- Songs Library -->
+        <div>
+            <h2 class="section-title">
+                <i class="fas fa-music"></i> Your Songs
+            </h2>
+            <div class="songs-grid" id="songsGrid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🎵</div>
+                    <div>No songs yet. Upload your first song!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+ <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- html2canvas for capturing edited photos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        console.log('Script loaded!');
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDW8V2SjNITrA4LcdmeILh944mTbOKnM0c",
+            authDomain: "rewarderhub.firebaseapp.com",
+            projectId: "rewarderhub",
+            storageBucket: "rewarderhub.appspot.com",
+            messagingSenderId: "85965945106",
+            appId: "1:85965945106:web:fa0a57d8968926e1041bcb",
+            measurementId: "G-F2ERB5NGN0"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+      const storage = firebase.storage();
+
+        // Cloudinary Config
+        const CLOUDINARY_CLOUD_NAME = 'dzhdgxjhl';
+        const CLOUDINARY_UPLOAD_PRESET = 'pose_media';
+
+        // State
+        let currentUser = null;
+        let selectedImage = null;
+        let selectedAudio = null;
+
+        // Check Auth State
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            if (user) {
+                showMainApp();
+                document.getElementById('userName').textContent = user.displayName || 'User';
+                document.getElementById('userEmail').textContent = user.email;
+                loadUserSongs();
+            } else {
+                showAuthScreen();
+            }
+        });
+
+        function showMainApp() {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainContent').classList.add('active');
+            document.getElementById('userSection').style.display = 'flex';
+            document.getElementById('authButtons').style.display = 'none';
+        }
+
+        function showAuthScreen() {
+            document.getElementById('authSection').style.display = 'flex';
+            document.getElementById('mainContent').classList.remove('active');
+            document.getElementById('userSection').style.display = 'none';
+            document.getElementById('authButtons').style.display = 'flex';
+        }
+
+        function toggleAuth(type) {
+            if (type === 'signin') {
+                document.getElementById('signInForm').style.display = 'block';
+                document.getElementById('signUpForm').style.display = 'none';
+            } else {
+                document.getElementById('signInForm').style.display = 'none';
+                document.getElementById('signUpForm').style.display = 'block';
+            }
+        }
+
+        async function handleSignIn() {
+            const email = document.getElementById('signInEmail').value.trim();
+            const password = document.getElementById('signInPassword').value;
+
+            if (!email || !password) {
+                showToast('Enter email and password', 'error');
+                return;
+            }
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showToast('✓ Signed in', 'success');
+                document.getElementById('signInEmail').value = '';
+                document.getElementById('signInPassword').value = '';
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function handleSignUp() {
+            const name = document.getElementById('signUpName').value.trim();
+            const email = document.getElementById('signUpEmail').value.trim();
+            const password = document.getElementById('signUpPassword').value;
+            const confirmPassword = document.getElementById('signUpConfirmPassword').value;
+
+            if (!name || !email || !password) {
+                showToast('Fill all fields', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Password must be 6+ characters', 'error');
+                return;
+            }
+
+            try {
+                const result = await auth.createUserWithEmailAndPassword(email, password);
+                await result.user.updateProfile({ displayName: name });
+                showToast('✓ Account created', 'success');
+                clearAuthForms();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        function signOut() {
+            auth.signOut().then(() => {
+                showToast('Signed out', 'success');
+                clearAuthForms();
+            });
+        }
+
+        function clearAuthForms() {
+            document.getElementById('signInEmail').value = '';
+            document.getElementById('signInPassword').value = '';
+            document.getElementById('signUpName').value = '';
+            document.getElementById('signUpEmail').value = '';
+            document.getElementById('signUpPassword').value = '';
+            document.getElementById('signUpConfirmPassword').value = '';
+        }
+
+        // File Handlers
+        document.getElementById('imageFile').addEventListener('change', function() {
+            selectedImage = this.files[0];
+            if (selectedImage) {
+                document.getElementById('imageName').textContent = selectedImage.name;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('imagePreview').innerHTML = `<img src="${e.target.result}" alt="preview">`;
+                };
+                reader.readAsDataURL(selectedImage);
+            }
+        });
+
+        document.getElementById('audioFile').addEventListener('change', function() {
+            selectedAudio = this.files[0];
+            if (selectedAudio) {
+                document.getElementById('audioName').textContent = selectedAudio.name;
+            }
+        });
+
+        // Upload to Cloudinary
+        async function uploadToCloudinary(file, resourceType) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+                const xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = (e.loaded / e.total) * 100;
+                        document.getElementById('progressFill').style.width = percent + '%';
+                        document.getElementById('uploadStatus').textContent = Math.round(percent) + '%';
+                    }
+                });
+
+                xhr.addEventListener('load', () => {
+                    if (xhr.status === 200) {
+                        const data = JSON.parse(xhr.responseText);
+                        resolve(data.secure_url);
+                    } else {
+                        reject(new Error('Upload failed'));
+                    }
+                });
+
+                xhr.addEventListener('error', () => reject(new Error('Network error')));
+
+                const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`;
+                xhr.open('POST', url);
+                xhr.send(formData);
+            });
+        }
+
+        // Upload Song
+        async function uploadSong() {
+            const title = document.getElementById('songTitle').value.trim();
+            const artist = document.getElementById('artistName').value.trim();
+
+            if (!title || !artist) {
+                showToast('Enter title and artist', 'error');
+                return;
+            }
+
+            if (!selectedImage || !selectedAudio) {
+                showToast('Select image and audio', 'error');
+                return;
+            }
+
+            if (!currentUser) {
+                showToast('Sign in first', 'error');
+                return;
+            }
+
+            try {
+                document.getElementById('uploadProgress').style.display = 'block';
+
+                const imageUrl = await uploadToCloudinary(selectedImage, 'image');
+                const audioUrl = await uploadToCloudinary(selectedAudio, 'video');
+
+                await db.collection('users').doc(currentUser.uid).collection('songs').add({
+                    title: title,
+                    artist: artist,
+                    imageUrl: imageUrl,
+                    audioUrl: audioUrl,
+                    uploadedAt: new Date(),
+                    plays: 0,
+                    likes: 0,
+                    downloads: 0
+                });
+
+                showToast('✓ Song uploaded', 'success');
+
+                document.getElementById('songTitle').value = '';
+                document.getElementById('artistName').value = '';
+                document.getElementById('imageFile').value = '';
+                document.getElementById('audioFile').value = '';
+                selectedImage = null;
+                selectedAudio = null;
+                document.getElementById('imagePreview').innerHTML = '<i class="fas fa-image"></i>';
+                document.getElementById('imageName').textContent = '';
+                document.getElementById('audioName').textContent = '';
+                document.getElementById('uploadProgress').style.display = 'none';
+                document.getElementById('progressFill').style.width = '0%';
+
+                loadUserSongs();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+                document.getElementById('uploadProgress').style.display = 'none';
+            }
+        }
+
+        // Load Songs
+        async function loadUserSongs() {
+            if (!currentUser) return;
+
+            try {
+                const snapshot = await db.collection('users').doc(currentUser.uid).collection('songs').orderBy('uploadedAt', 'desc').get();
+
+                const grid = document.getElementById('songsGrid');
+                grid.innerHTML = '';
+
+                if (snapshot.empty) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🎵</div>
+                            <div>No songs yet. Upload your first song!</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const song = doc.data();
+                    const songId = doc.id;
+
+                    const card = document.createElement('div');
+                    card.className = 'song-card';
+                    card.innerHTML = `
+                        <div class="song-cover">
+                            ${song.imageUrl ? `<img src="${song.imageUrl}" alt="${song.title}">` : '<i class="fas fa-music"></i>'}
+                        </div>
+                        <div class="song-content">
+                            <div class="song-title">${song.title}</div>
+                            <div class="song-artist">${song.artist}</div>
+
+                            <div class="song-stats">
+                                <div>
+                                    <div class="stat-value">${song.plays || 0}</div>
+                                    <div class="stat-label">Plays</div>
+                                </div>
+                                <div>
+                                    <div class="stat-value">${song.likes || 0}</div>
+                                    <div class="stat-label">Likes</div>
+                                </div>
+                                <div>
+                                    <div class="stat-value">${song.downloads || 0}</div>
+                                    <div class="stat-label">Downloads</div>
+                                </div>
+                            </div>
+
+                            <div class="song-actions">
+                                <button class="btn btn-secondary" onclick="playSong('${song.audioUrl}')">
+                                    <i class="fas fa-play"></i> Play
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteSong('${songId}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                showToast('Error loading songs', 'error');
+            }
+        }
+
+        function playSong(audioUrl) {
+            const audio = new Audio(audioUrl);
+            audio.play().catch(error => {
+                showToast('Error playing audio', 'error');
+            });
+        }
+
+        async function deleteSong(songId) {
+            if (!confirm('Delete this song?')) return;
+
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('songs').doc(songId).delete();
+                showToast('✓ Song deleted', 'success');
+                loadUserSongs();
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Initial
+        document.getElementById('signInForm').style.display = 'block';
     </script>
 </body>
 </html>
