@@ -713,15 +713,20 @@
                 });
 
                 xhr.addEventListener('load', () => {
-                    if (xhr.status === 200) {
+                    try {
                         const data = JSON.parse(xhr.responseText);
-                        resolve(data.secure_url);
-                    } else {
-                        reject(new Error('Upload failed'));
+                        
+                        if (xhr.status === 200) {
+                            resolve(data.secure_url);
+                        } else {
+                            reject(new Error(data.error?.message || `Upload failed: ${xhr.status}`));
+                        }
+                    } catch (e) {
+                        reject(new Error(`Invalid response: ${xhr.responseText}`));
                     }
                 });
 
-                xhr.addEventListener('error', () => reject(new Error('Network error')));
+                xhr.addEventListener('error', () => reject(new Error('Network error - check CORS or upload preset')));
 
                 const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`;
                 xhr.open('POST', url);
@@ -782,6 +787,7 @@
 
                 loadUserSongs();
             } catch (error) {
+                console.error('Upload error:', error);
                 showToast('Error: ' + error.message, 'error');
                 document.getElementById('uploadProgress').style.display = 'none';
             }
