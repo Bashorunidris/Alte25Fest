@@ -781,9 +781,16 @@
         async function uploadSong() {
             const title = document.getElementById('songTitle').value.trim();
             const artist = document.getElementById('artistName').value.trim();
+            const country = document.getElementById('songCountry').value.trim();
+            const genre = document.getElementById('songGenre').value.trim();
 
             if (!title || !artist) {
                 showToast('Enter title and artist', 'error');
+                return;
+            }
+
+            if (!country || !genre) {
+                showToast('Select country and genre', 'error');
                 return;
             }
 
@@ -870,16 +877,15 @@
             if (!currentUser) return;
 
             try {
-                // Load all songs from songs_by_date (one read per day document)
-                const snapshot = await db.collection('users').doc(currentUser.uid).collection('songs_by_date').orderBy('date', 'desc').get();
-
                 const grid = document.getElementById('songsGrid');
                 grid.innerHTML = '';
 
                 const allSongs = [];
+
+                // Load from NEW structure (songs_by_date)
+                const newSnapshot = await db.collection('users').doc(currentUser.uid).collection('songs_by_date').orderBy('date', 'desc').get();
                 
-                // Collect all songs from all day documents
-                snapshot.forEach(dateDoc => {
+                newSnapshot.forEach(dateDoc => {
                     const dateData = dateDoc.data();
                     if (dateData.songs && Array.isArray(dateData.songs)) {
                         allSongs.push(...dateData.songs.map(song => ({
@@ -887,6 +893,19 @@
                             dateId: dateDoc.id
                         })));
                     }
+                });
+
+                // Load from OLD structure (songs) for backwards compatibility
+                const oldSnapshot = await db.collection('users').doc(currentUser.uid).collection('songs').get();
+                
+                oldSnapshot.forEach(doc => {
+                    const song = doc.data();
+                    allSongs.push({
+                        ...song,
+                        id: song.id || doc.id,
+                        dateId: 'legacy_' + doc.id,
+                        isLegacy: true
+                    });
                 });
 
                 if (allSongs.length === 0) {
@@ -982,27 +1001,34 @@
             if (!confirm('Delete this song?')) return;
 
             try {
-                const dateDocRef = db.collection('users').doc(currentUser.uid).collection('songs_by_date').doc(dateId);
-                const dateDoc = await dateDocRef.get();
-                
-                if (dateDoc.exists) {
-                    let songs = dateDoc.data().songs || [];
-                    songs = songs.filter(s => s.id !== songId);
+                // Check if it's a legacy song (old structure)
+                if (dateId.startsWith('legacy_')) {
+                    const legacyId = dateId.replace('legacy_', '');
+                    await db.collection('users').doc(currentUser.uid).collection('songs').doc(legacyId).delete();
+                } else {
+                    // New structure
+                    const dateDocRef = db.collection('users').doc(currentUser.uid).collection('songs_by_date').doc(dateId);
+                    const dateDoc = await dateDocRef.get();
                     
-                    if (songs.length === 0) {
-                        // Delete the day document if no songs left
-                        await dateDocRef.delete();
-                    } else {
-                        // Update with remaining songs
-                        await dateDocRef.update({
-                            songs: songs,
-                            lastUpdated: new Date()
-                        });
+                    if (dateDoc.exists) {
+                        let songs = dateDoc.data().songs || [];
+                        songs = songs.filter(s => s.id !== songId);
+                        
+                        if (songs.length === 0) {
+                            // Delete the day document if no songs left
+                            await dateDocRef.delete();
+                        } else {
+                            // Update with remaining songs
+                            await dateDocRef.update({
+                                songs: songs,
+                                lastUpdated: new Date()
+                            });
+                        }
                     }
-                    
-                    showToast('✓ Song deleted', 'success');
-                    loadUserSongs();
                 }
+                
+                showToast('✓ Song deleted', 'success');
+                loadUserSongs();
             } catch (error) {
                 console.error('Error deleting song:', error);
                 showToast('Error: ' + error.message, 'error');
