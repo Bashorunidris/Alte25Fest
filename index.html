@@ -803,21 +803,50 @@
                 const imageUrl = await uploadToCloudinary(selectedImage, 'image');
                 const audioUrl = await uploadToCloudinary(selectedAudio, 'video');
 
-                await db.collection('users').doc(currentUser.uid).collection('songs').add({
+                // Get today's date in YYYY-MM-DD format
+                const today = new Date().toISOString().split('T')[0];
+                
+                // Create song object
+                const newSong = {
+                    id: Date.now().toString(),
                     title: title,
                     artist: artist,
+                    country: country,
+                    genre: genre,
                     imageUrl: imageUrl,
                     audioUrl: audioUrl,
                     uploadedAt: new Date(),
                     plays: 0,
                     likes: 0,
                     downloads: 0
-                });
+                };
+
+                // Save to songs_by_date collection (one document per day)
+                const dateDocRef = db.collection('users').doc(currentUser.uid).collection('songs_by_date').doc(today);
+                const dateDoc = await dateDocRef.get();
+                
+                if (dateDoc.exists) {
+                    // Add to existing array
+                    await dateDocRef.update({
+                        songs: firebase.firestore.FieldValue.arrayUnion(newSong),
+                        lastUpdated: new Date()
+                    });
+                } else {
+                    // Create new document with first song
+                    await dateDocRef.set({
+                        date: today,
+                        songs: [newSong],
+                        createdAt: new Date(),
+                        lastUpdated: new Date()
+                    });
+                }
 
                 showToast('✓ Song uploaded', 'success');
 
                 document.getElementById('songTitle').value = '';
                 document.getElementById('artistName').value = '';
+                document.getElementById('songCountry').value = '';
+                document.getElementById('songGenre').value = '';
                 document.getElementById('imageFile').value = '';
                 document.getElementById('audioFile').value = '';
                 selectedImage = null;
@@ -841,12 +870,26 @@
             if (!currentUser) return;
 
             try {
-                const snapshot = await db.collection('users').doc(currentUser.uid).collection('songs').orderBy('uploadedAt', 'desc').get();
+                // Load all songs from songs_by_date (one read per day document)
+                const snapshot = await db.collection('users').doc(currentUser.uid).collection('songs_by_date').orderBy('date', 'desc').get();
 
                 const grid = document.getElementById('songsGrid');
                 grid.innerHTML = '';
 
-                if (snapshot.empty) {
+                const allSongs = [];
+                
+                // Collect all songs from all day documents
+                snapshot.forEach(dateDoc => {
+                    const dateData = dateDoc.data();
+                    if (dateData.songs && Array.isArray(dateData.songs)) {
+                        allSongs.push(...dateData.songs.map(song => ({
+                            ...song,
+                            dateId: dateDoc.id
+                        })));
+                    }
+                });
+
+                if (allSongs.length === 0) {
                     grid.innerHTML = `
                         <div class="empty-state">
                             <div class="empty-state-icon">🎵</div>
@@ -856,10 +899,10 @@
                     return;
                 }
 
-                snapshot.forEach(doc => {
-                    const song = doc.data();
-                    const songId = doc.id;
+                // Sort songs by uploadedAt (newest first)
+                allSongs.sort((a, b) => (b.uploadedAt?.toDate?.() || new Date(0)) - (a.uploadedAt?.toDate?.() || new Date(0)));
 
+                allSongs.forEach(song => {
                     const card = document.createElement('div');
                     card.className = 'song-card';
                     card.innerHTML = `
@@ -869,18 +912,19 @@
                         <div class="song-content">
                             <div class="song-title">${song.title}</div>
                             <div class="song-artist">${song.artist}</div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 10px;">${song.country || 'Unknown'} • ${song.genre || 'Unknown'}</div>
 
                             <div class="song-stats">
                                 <div>
-                                    <div class="stat-value">${song.plays || 0}</div>
+                                    <div class="stat-value" onclick="updateStat('${song.dateId}', '${song.id}', 'plays')" style="cursor: pointer; transition: color 0.2s;">${song.plays || 0}</div>
                                     <div class="stat-label">Plays</div>
                                 </div>
                                 <div>
-                                    <div class="stat-value">${song.likes || 0}</div>
+                                    <div class="stat-value" onclick="updateStat('${song.dateId}', '${song.id}', 'likes')" style="cursor: pointer; transition: color 0.2s;">${song.likes || 0}</div>
                                     <div class="stat-label">Likes</div>
                                 </div>
                                 <div>
-                                    <div class="stat-value">${song.downloads || 0}</div>
+                                    <div class="stat-value" onclick="updateStat('${song.dateId}', '${song.id}', 'downloads')" style="cursor: pointer; transition: color 0.2s;">${song.downloads || 0}</div>
                                     <div class="stat-label">Downloads</div>
                                 </div>
                             </div>
@@ -889,7 +933,7 @@
                                 <button class="btn btn-secondary" onclick="playSong('${song.audioUrl}')">
                                     <i class="fas fa-play"></i> Play
                                 </button>
-                                <button class="btn btn-danger" onclick="deleteSong('${songId}')">
+                                <button class="btn btn-danger" onclick="deleteSong('${song.dateId}', '${song.id}')">
                                     <i class="fas fa-trash"></i> Delete
                                 </button>
                             </div>
@@ -898,6 +942,7 @@
                     grid.appendChild(card);
                 });
             } catch (error) {
+                console.error('Error loading songs:', error);
                 showToast('Error loading songs', 'error');
             }
         }
@@ -909,14 +954,57 @@
             });
         }
 
-        async function deleteSong(songId) {
+        async function updateStat(dateId, songId, statType) {
+            try {
+                const dateDocRef = db.collection('users').doc(currentUser.uid).collection('songs_by_date').doc(dateId);
+                const dateDoc = await dateDocRef.get();
+                
+                if (dateDoc.exists) {
+                    const songs = dateDoc.data().songs || [];
+                    const songIndex = songs.findIndex(s => s.id === songId);
+                    
+                    if (songIndex !== -1) {
+                        songs[songIndex][statType] = (songs[songIndex][statType] || 0) + 1;
+                        await dateDocRef.update({
+                            songs: songs,
+                            lastUpdated: new Date()
+                        });
+                        loadUserSongs();
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating stat:', error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteSong(dateId, songId) {
             if (!confirm('Delete this song?')) return;
 
             try {
-                await db.collection('users').doc(currentUser.uid).collection('songs').doc(songId).delete();
-                showToast('✓ Song deleted', 'success');
-                loadUserSongs();
+                const dateDocRef = db.collection('users').doc(currentUser.uid).collection('songs_by_date').doc(dateId);
+                const dateDoc = await dateDocRef.get();
+                
+                if (dateDoc.exists) {
+                    let songs = dateDoc.data().songs || [];
+                    songs = songs.filter(s => s.id !== songId);
+                    
+                    if (songs.length === 0) {
+                        // Delete the day document if no songs left
+                        await dateDocRef.delete();
+                    } else {
+                        // Update with remaining songs
+                        await dateDocRef.update({
+                            songs: songs,
+                            lastUpdated: new Date()
+                        });
+                    }
+                    
+                    showToast('✓ Song deleted', 'success');
+                    loadUserSongs();
+                }
             } catch (error) {
+                console.error('Error deleting song:', error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
